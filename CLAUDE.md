@@ -231,11 +231,10 @@ parcelextract \
 
 ## Common Pitfalls to Avoid
 
-1. **Memory Issues**: Don't load entire 4D datasets at once for large files
-2. **Atlas Misalignment**: Always check atlas-image alignment
-3. **NaN Handling**: Properly handle missing data in parcels
-4. **BIDS Naming**: Preserve all entities from input files
-5. **Type Consistency**: Ensure consistent dtype throughout pipeline
+1. **Atlas Misalignment**: Always check atlas-image alignment
+2. **NaN Handling**: Properly handle missing data in parcels
+3. **BIDS Naming**: Preserve all entities from input files
+4. **Type Consistency**: Ensure consistent dtype throughout pipeline
 
 ## Validation Checklist
 
