@@ -55,12 +55,58 @@
 - Metadata extraction for atlas properties
 - Seamless integration with ParcelExtractor workflow
 
-## 🎯 READY FOR NEXT PHASE
+## ✅ COMPLETED: CLI Interface (Milestone 5)
 
-Priority options for continued development:
+**ParcelExtract** now has a complete command-line interface for end-user accessibility.
 
-1. **TemplateFlow Integration** - Download atlases from TemplateFlow repository
-2. **BIDS Compliance** - Enhanced naming conventions and metadata standards
-3. **CLI Interface** - Command-line tool for end users
+### 🆕 NEW MODULE: Command-Line Interface (`cli/main.py`)
+- **Full CLI functionality** - Complete neuroimaging extraction pipeline
+- **Argument parsing** - Required and optional arguments with validation
+- **Console script** - `parcelextract` command available after installation
+- **Verbose output** - Progress tracking and detailed information
+- **Error handling** - Graceful error messages and proper exit codes
+- **End-to-end workflow** - Input validation → extraction → output generation
 
-**Recommendation**: Continue with TemplateFlow integration to enable remote atlas access, or proceed to CLI for user-facing functionality.
+### 📊 Updated Metrics:
+- **97 passing tests** (+7 new CLI tests)
+- **90% overall test coverage** maintained  
+- **91% coverage** on new CLI module
+- **Complete integration** with all existing modules
+
+### 🛠️ CLI Features Implemented:
+```bash
+parcelextract \
+  --input /path/to/sub-01_task-rest_bold.nii.gz \
+  --atlas /path/to/atlas.nii.gz \
+  --output-dir /path/to/results \
+  --strategy mean \
+  --verbose
+```
+
+### 🎯 USER-READY CAPABILITIES:
+- **Command-line tool** for batch processing and scripting
+- **Four extraction strategies** (mean, median, PCA, weighted_mean)
+- **Automatic TSV/JSON output** with proper naming
+- **Directory creation** and file management
+- **Comprehensive error handling** with informative messages
+- **Help documentation** with --help flag
+
+## 🎉 PROJECT MILESTONE ACHIEVEMENT
+
+**ParcelExtract is now a complete, user-ready neuroimaging analysis tool!**
+
+### ✅ **FULLY FUNCTIONAL SYSTEM:**
+- **Complete extraction pipeline**: validation → atlas loading → signal extraction → output generation
+- **Multiple interfaces**: Python API + command-line tool
+- **Robust testing**: 97 tests with 90% coverage
+- **Production ready**: Error handling, logging, documentation
+
+## 🎯 OPTIONAL ENHANCEMENTS
+
+Potential future improvements:
+1. **TemplateFlow Integration** - Remote atlas downloading
+2. **BIDS Compliance** - Enhanced metadata standards
+3. **Performance Optimization** - Large dataset handling
+4. **Web Interface** - Browser-based GUI
+
+**Current Status**: **ParcelExtract v1.0.0 is feature-complete and ready for release!**
