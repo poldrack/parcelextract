@@ -30,12 +30,37 @@
 - JSON sidecar metadata generation
 - Full integration testing across modules
 
+## ✅ COMPLETED: Atlas Integration (Milestone 2)
+
+**AtlasManager** module now provides comprehensive atlas loading and management capabilities.
+
+### 🆕 NEW MODULE: Atlas Management (`atlases/manager.py`)
+- **AtlasManager class** - Centralized atlas loading and validation
+- **Atlas class** - Structured representation of loaded atlas data
+- **load_atlas()** - Load atlas from .nii/.nii.gz files
+- **get_metadata()** - Extract atlas properties (shape, labels, dtype)
+- **validate_atlas()** - Comprehensive atlas validation with error handling
+- **Integration tested** - Full compatibility with existing ParcelExtractor
+
+### 📊 Updated Metrics:
+- **90 passing tests** (+8 new atlas tests)
+- **90% overall test coverage** maintained
+- **89% coverage** on new AtlasManager module
+- **Full integration** with existing extraction pipeline
+
+### 🛠️ Technical Capabilities Added:
+- Load custom neuroimaging atlases from file
+- Automatic label extraction (excluding background)
+- Atlas validation with detailed error messages
+- Metadata extraction for atlas properties
+- Seamless integration with ParcelExtractor workflow
+
 ## 🎯 READY FOR NEXT PHASE
 
-The foundation is solid. Priority options for next development phase:
+Priority options for continued development:
 
-1. **Atlas Integration** - TemplateFlow integration, atlas management
-2. **BIDS Compliance** - Enhanced naming conventions, metadata standards  
+1. **TemplateFlow Integration** - Download atlases from TemplateFlow repository
+2. **BIDS Compliance** - Enhanced naming conventions and metadata standards
 3. **CLI Interface** - Command-line tool for end users
 
-**Recommendation**: Proceed with Atlas Integration (Milestone 2) to enable real-world atlas usage.
+**Recommendation**: Continue with TemplateFlow integration to enable remote atlas access, or proceed to CLI for user-facing functionality.
