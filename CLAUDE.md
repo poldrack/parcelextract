@@ -285,7 +285,7 @@ def test_extraction_mean():
 
 ```bash
 # Setup project with uv
-uv init
+uv init --package .
 uv add nibabel nilearn numpy pandas scipy templateflow
 
 # Run tests
