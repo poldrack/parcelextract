@@ -121,15 +121,15 @@
 
 ## Milestone 3: Advanced Features (Priority 3)
 
-### Additional Extraction Strategies
-- [ ] Write tests for median extraction
-- [ ] Write tests for PCA extraction
-- [ ] Write tests for weighted mean extraction
-- [ ] Implement MedianExtractionStrategy class
-- [ ] Implement PCAExtractionStrategy class
-- [ ] Implement WeightedMeanExtractionStrategy class
-- [ ] Add strategy selection mechanism
-- [ ] Optimize performance for each strategy
+### ✅ COMPLETED: Additional Extraction Strategies - COMPLETE
+- [x] Write tests for median extraction
+- [x] Write tests for PCA extraction
+- [x] Write tests for weighted mean extraction
+- [x] Implement MedianExtractionStrategy class
+- [x] Implement PCAExtractionStrategy class
+- [x] Implement WeightedMeanExtractionStrategy class
+- [x] Add strategy selection mechanism
+- [ ] Optimize performance for each strategy - Future enhancement
 
 ### Confound Regression
 - [ ] Write tests for confound loading
@@ -300,8 +300,30 @@
 
 ---
 
-Last Updated: [Date]
+Last Updated: August 30, 2025
 Total Tasks: ~185
-Completed: 0
+Completed: 78 (includes all core functionality + output writing)
 In Progress: 0
 Blocked: 0
+
+## Current Status Summary
+
+### ✅ FULLY COMPLETED PHASES:
+- **Phase 1: Core Functionality** - 100% Complete
+  - Input validation (22 tests)
+  - File I/O readers (24 tests)
+  - All 4 extraction strategies (23 tests)
+  - Core ParcelExtractor class (9 tests)
+  - Output writing TSV/JSON (4 tests)
+
+### 📊 PROJECT METRICS:
+- **82 total tests passing**
+- **90% overall test coverage**
+- **100% coverage** on critical modules (writers.py)
+- **Performance**: All tests run in <2 seconds
+- **Dependencies**: Fully configured with uv package manager
+
+### 🎯 NEXT PRIORITY PHASES:
+1. **Atlas Integration** (Milestone 2) - AtlasManager and TemplateFlow integration
+2. **BIDS Compliance** (Milestone 4) - Enhanced naming and metadata
+3. **CLI Interface** (Milestone 5) - Command-line tool and documentation
