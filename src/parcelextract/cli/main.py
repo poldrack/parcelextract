@@ -7,19 +7,21 @@ from typing import Optional, List
 
 from parcelextract.core.extractor import ParcelExtractor
 from parcelextract.io.writers import write_timeseries_tsv, write_json_sidecar
+from parcelextract.atlases.templateflow import TemplateFlowManager
 
 
-def resolve_atlas_path(atlas_spec: str) -> str:
+def resolve_atlas_path(atlas_spec: str, space: str = "MNI152NLin2009cAsym") -> str:
     """
     Resolve atlas specification to a file path.
     
-    For now, this provides helpful error messages for TemplateFlow atlas names
-    that aren't yet supported, while allowing file paths to pass through.
+    Supports both local file paths and TemplateFlow atlas names.
     
     Parameters
     ----------
     atlas_spec : str
         Atlas specification (file path or TemplateFlow name)
+    space : str, optional
+        Template space for TemplateFlow atlases (default: MNI152NLin2009cAsym)
         
     Returns
     -------
@@ -29,9 +31,11 @@ def resolve_atlas_path(atlas_spec: str) -> str:
     Raises
     ------
     ValueError
-        If TemplateFlow atlas name is provided (not yet supported)
+        If TemplateFlow atlas name is unsupported
     FileNotFoundError
         If atlas file path doesn't exist
+    RuntimeError
+        If TemplateFlow download fails
     """
     atlas_path = Path(atlas_spec)
     
@@ -45,11 +49,20 @@ def resolve_atlas_path(atlas_spec: str) -> str:
     ]
     
     if any(pattern.lower() in atlas_spec.lower() for pattern in templateflow_patterns):
-        raise ValueError(
-            f"TemplateFlow atlas names like '{atlas_spec}' are not yet supported in this version.\n"
-            f"Please provide a local atlas file path (e.g., '/path/to/atlas.nii.gz').\n"
-            f"Future versions will support automatic TemplateFlow atlas downloading."
-        )
+        try:
+            # Try to download from TemplateFlow
+            tf_manager = TemplateFlowManager()
+            return tf_manager.get_atlas(atlas_spec, space)
+        except ImportError:
+            raise RuntimeError(
+                f"TemplateFlow is not installed. To use atlas '{atlas_spec}', install it with:\n"
+                f"uv add templateflow\n"
+                f"Or provide a local atlas file path instead."
+            )
+        except Exception as e:
+            raise RuntimeError(
+                f"Failed to download atlas '{atlas_spec}' from TemplateFlow: {e}"
+            )
     
     # If it's not a TemplateFlow name and file doesn't exist, raise FileNotFoundError
     raise FileNotFoundError(f"Atlas file not found: {atlas_spec}")
@@ -80,7 +93,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--atlas', 
         required=True,
-        help='Path to atlas Nifti file (.nii or .nii.gz). TemplateFlow names not yet supported.'
+        help='Path to atlas Nifti file or TemplateFlow atlas name (e.g., Schaefer2018, AAL)'
     )
     
     parser.add_argument(
@@ -95,6 +108,12 @@ def create_parser() -> argparse.ArgumentParser:
         choices=['mean', 'median', 'pca', 'weighted_mean'],
         default='mean',
         help='Signal extraction strategy'
+    )
+    
+    parser.add_argument(
+        '--space',
+        default='MNI152NLin2009cAsym',
+        help='Template space for TemplateFlow atlases (default: MNI152NLin2009cAsym)'
     )
     
     parser.add_argument(
@@ -128,12 +147,16 @@ def main(argv: Optional[List[str]] = None) -> None:
         print(f"ParcelExtract v1.0.0")
         print(f"Input: {args.input}")
         print(f"Atlas: {args.atlas}")
+        print(f"Space: {args.space}")
         print(f"Output: {args.output_dir}")
         print(f"Strategy: {args.strategy}")
     
     try:
         # Resolve atlas path
-        atlas_path = resolve_atlas_path(args.atlas)
+        if args.verbose and not Path(args.atlas).exists():
+            print(f"Downloading atlas '{args.atlas}' from TemplateFlow...")
+        
+        atlas_path = resolve_atlas_path(args.atlas, args.space)
         
         # Create extractor
         extractor = ParcelExtractor(atlas=atlas_path, strategy=args.strategy)

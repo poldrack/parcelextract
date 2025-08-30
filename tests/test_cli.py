@@ -67,11 +67,27 @@ class TestCLIParser:
             '--atlas', 'test_atlas.nii.gz', 
             '--output-dir', 'output',
             '--strategy', 'median',
+            '--space', 'MNI152NLin6Asym',
             '--verbose'
         ])
         
         assert args.strategy == 'median'
+        assert args.space == 'MNI152NLin6Asym'
         assert args.verbose is True
+
+    def test_parser_has_default_space(self):
+        """Test that parser has default space argument."""
+        parser = create_parser()
+        
+        # Test with minimal required arguments
+        args = parser.parse_args([
+            '--input', 'test_input.nii.gz',
+            '--atlas', 'test_atlas.nii.gz',
+            '--output-dir', 'output'
+        ])
+        
+        # Should have default space
+        assert args.space == 'MNI152NLin2009cAsym'
 
 
 class TestCLIIntegration:
@@ -153,15 +169,17 @@ class TestAtlasResolution:
         resolved = resolve_atlas_path(str(atlas_file))
         assert resolved == str(atlas_file)
 
-    def test_resolve_templateflow_atlas_name_raises_helpful_error(self):
-        """Test that TemplateFlow atlas names raise helpful error."""
-        with pytest.raises(ValueError) as exc_info:
-            resolve_atlas_path("Schaefer2018")
+    @patch('parcelextract.cli.main.TemplateFlowManager')
+    def test_resolve_templateflow_atlas_calls_manager(self, mock_tf_manager):
+        """Test that TemplateFlow atlas names call the manager."""
+        mock_manager = mock_tf_manager.return_value
+        mock_manager.get_atlas.return_value = "/path/to/downloaded/atlas.nii.gz"
         
-        error_msg = str(exc_info.value)
-        assert "TemplateFlow atlas names" in error_msg
-        assert "not yet supported" in error_msg
-        assert "local atlas file path" in error_msg
+        result = resolve_atlas_path("Schaefer2018", "MNI152NLin2009cAsym")
+        
+        mock_tf_manager.assert_called_once()
+        mock_manager.get_atlas.assert_called_once_with("Schaefer2018", "MNI152NLin2009cAsym")
+        assert result == "/path/to/downloaded/atlas.nii.gz"
 
     def test_resolve_nonexistent_file_raises_error(self):
         """Test that nonexistent files raise FileNotFoundError."""
