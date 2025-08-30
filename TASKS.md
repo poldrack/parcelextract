@@ -71,13 +71,19 @@
 - [ ] Add logging for extraction process
 - **Status**: 9 passing tests, full functionality with all strategies and validation
 
-### Basic Output Writer (`io/writers.py`)
-- [ ] Write tests for TSV file generation
-- [ ] Write tests for output directory creation
-- [ ] Write tests for file naming
-- [ ] Implement write_timeseries_tsv() function
-- [ ] Implement create_output_dir() function
-- [ ] Add basic metadata to output files
+### ✅ COMPLETED: Output Writer (`io/writers.py`) - COMPLETE
+- [x] Write tests for TSV file generation (TDD approach)
+- [x] Write tests for output directory creation (TDD approach)
+- [x] Write tests for JSON sidecar metadata (TDD approach) 
+- [x] Write tests for JSON directory creation (TDD approach)
+- [x] Implement write_timeseries_tsv() function
+- [x] Implement write_json_sidecar() function
+- [x] Implement automatic directory creation
+- [x] Add integration with pathlib for robust file handling
+- [ ] Write tests for BIDS-compliant file naming (TDD approach) - Future enhancement
+- [ ] Write tests for error handling (TDD approach) - Future enhancement
+- [ ] Implement BIDS naming utilities - Future enhancement
+- **Status**: 4 passing tests, 100% coverage, full TSV/JSON output functionality
 
 ## Milestone 2: Atlas Integration (Priority 2)
 

@@ -3,82 +3,25 @@
 - Use this file to keep notes on ongoing development work.
 - When the work is completed, clean it out from this file, so that the contents only reflect ongoing work.
 
-## COMPLETED PHASE 1 (Core Foundation) - FINISHED ✅
+## ✅ COMPLETED: Phase 2 - Output Writing Module
 
-✅ **Project Setup Complete**
-- Full module structure created with proper `__init__.py` files (kept empty per spec)
-- Dependencies configured: nibabel, nilearn, numpy, pandas, scipy, scikit-learn, templateflow
-- pytest setup with fixtures for synthetic 4D/3D data and test atlases
-- 88%+ test coverage across core modules
+### Completed: `io/writers.py` - DONE
+Successfully implemented using TDD methodology for TSV/JSON output generation module
 
-✅ **Input Validation Module** (`src/parcelextract/core/validators.py`)
-- Comprehensive validation for 4D neuroimaging data, atlas specifications, output directories
-- Custom `ValidationError` exception class
-- Handles file paths, nibabel objects, dimension checking, atlas validation
-- 22 passing tests with edge cases (empty masks, NaN values, invalid files)
+#### TDD Cycles Completed:
+- [x] Test for basic TSV timeseries output
+- [x] Test for output directory creation  
+- [x] Test for JSON sidecar metadata
+- [x] Test for JSON directory creation
 
-✅ **File I/O Module** (`src/parcelextract/io/readers.py`) 
-- `load_nifti()` function with proper error handling for .nii/.nii.gz files
-- `get_image_metadata()` extracts dimensions, voxel sizes, TR, units
-- `validate_4d_image()` ensures proper 4D structure with timepoints
-- 24 passing tests including compressed/uncompressed formats, metadata extraction
+#### Module Features Implemented:
+- Write timeseries data as TSV files with proper column naming (parcel_0, parcel_1, etc.)
+- Create JSON sidecar files with metadata dictionary input
+- Automatic directory structure creation for both TSV and JSON outputs
+- Data transposition (parcels as columns, timepoints as rows)
+- Integration with pathlib for robust file handling
 
-✅ **Extraction Strategies Module** (`src/parcelextract/core/strategies.py`)
-- Abstract base class `ExtractionStrategy` using proper ABC pattern
-- `MeanExtractionStrategy` with NaN handling via `np.nanmean()`
-- `MedianExtractionStrategy` with `np.nanmedian()`
-- `PCAExtractionStrategy` using scikit-learn, handles edge cases (single voxel, constant data)
-- `WeightedMeanExtractionStrategy` for probabilistic atlases
-- 23 passing tests including edge cases (empty masks, NaN values, insufficient timepoints)
+**Status**: 4 new tests passing, 82 total tests passing, 90% coverage maintained, 100% coverage on writers.py
 
-## ✅ TDD DEMONSTRATION COMPLETED - Core Extractor
-
-**Proper TDD Methodology Demonstrated** with `ParcelExtractor` class:
-
-### Red-Green-Refactor Cycles Completed:
-1. **Cycle 1**: Basic instantiation test → minimal empty class
-2. **Cycle 2**: Atlas parameter test → store atlas as instance variable  
-3. **Cycle 3**: Strategy parameter test → store strategy as instance variable
-4. **Cycle 4**: `fit_transform()` method test → return correct shape dummy array
-5. **Cycle 5**: Actual signal extraction test → implement real extraction using existing strategies
-
-### Key TDD Principles Demonstrated:
-- ✅ **RED**: Write failing test first, verify failure
-- ✅ **GREEN**: Write minimal code to make test pass, verify all tests pass
-- ✅ **REFACTOR**: (minimal needed at this stage)
-- ✅ **Incremental**: Built functionality step-by-step, never more than needed
-- ✅ **Regression Safety**: All previous tests continued to pass at each step
-
-### Current Status:
-- **74 total tests passing** (22 validators + 24 I/O + 23 strategies + 5 extractor)
-- **`ParcelExtractor` basic functionality working** with mean extraction strategy
-- **Real signal extraction implemented** using existing strategy pattern
-- **Clean API design** driven by test requirements
-
-## ✅ CONTINUED TDD DEMONSTRATION - ParcelExtractor Enhancement
-
-**Additional TDD Cycles Completed**:
-
-### Red-Green-Refactor Cycles 6-9:
-6. **Strategy Selection**: Different strategies test → implement strategy factory method
-7. **Error Handling**: Invalid strategy test → (already working with strategy factory)
-8. **PCA Strategy**: PCA functionality test → (already working with existing implementation)
-9. **Input Validation**: Validation test → integrate existing validators into fit_transform
-
-### Enhanced ParcelExtractor Features:
-- ✅ **Strategy Selection**: Supports 'mean', 'median', 'pca', 'weighted_mean' strategies
-- ✅ **Input Validation**: Uses existing ValidationError for proper error handling
-- ✅ **Error Handling**: Raises meaningful errors for invalid strategy names
-- ✅ **Integration**: Properly integrates with existing validator and strategy modules
-
-### Current Status - Phase 1 COMPLETE:
-- **78 total tests passing** (9 extractor tests + 69 foundation tests)
-- **Enhanced `ParcelExtractor`** with full strategy support and validation
-- **Proper TDD methodology** demonstrated with 9 complete Red-Green-Refactor cycles
-- **Clean integration** with existing modular architecture
-
-## READY FOR NEXT PHASE
-- Could add atlas management module with TemplateFlow integration
-- Could add output writing module for TSV/JSON files  
-- Could add CLI interface module
-- All core functionality complete and well-tested with proper TDD approach
+## NEXT PHASE: Phase 3 - Atlas Integration or Advanced Features
+Ready to proceed to next development phase based on TASKS.md priority.
