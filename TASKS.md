@@ -1,63 +1,70 @@
 # TASKS.md - ParcelExtract Project Tasks
 
-## Project Setup & Configuration
-- [ ] Initialize project with uv (`uv init --package .`)
-- [ ] Update pyproject.toml with project metadata and dependencies
-- [ ] Set up directory structure as specified in PRD
-- [ ] Configure .gitignore for Python project
+## ✅ COMPLETED: Project Setup & Configuration
+- [x] Initialize project with uv (`uv init --package .`)
+- [x] Update pyproject.toml with project metadata and dependencies
+- [x] Set up directory structure as specified in PRD
+- [x] Configure .gitignore for Python project (basic setup)
 - [ ] Set up pre-commit hooks for code quality
-- [ ] Create initial README.md with project overview
-- [ ] Create PLANNING.md for strategic notes
-- [ ] Create SCRATCHPAD.md for development notes
+- [x] Create initial README.md with project overview
+- [x] Create PLANNING.md for strategic notes
+- [x] Create SCRATCHPAD.md for development notes
 
-## Milestone 1: Core Functionality (Priority 1)
+## ✅ COMPLETED: Milestone 1 - Core Functionality (Priority 1)
 
-### Test Framework Setup
-- [ ] Set up pytest configuration (pytest.ini)
-- [ ] Create test fixtures directory structure
-- [ ] Generate synthetic 4D Nifti test data
-- [ ] Create minimal test atlases with known properties
-- [ ] Set up pytest fixtures for shared test resources
-- [ ] Configure pytest-cov for coverage reporting
+### ✅ Test Framework Setup - COMPLETE
+- [x] Set up pytest configuration (pytest.ini)
+- [x] Create test fixtures directory structure
+- [x] Generate synthetic 4D Nifti test data
+- [x] Create minimal test atlases with known properties
+- [x] Set up pytest fixtures for shared test resources
+- [x] Configure pytest-cov for coverage reporting
 
-### Input Validation Module (`core/validators.py`)
-- [ ] Write tests for 4D Nifti validation
-- [ ] Write tests for file path validation
-- [ ] Write tests for nibabel image object validation
-- [ ] Write tests for dimension checking
-- [ ] Implement validate_input_image() function
-- [ ] Implement validate_atlas_spec() function
-- [ ] Implement validate_output_dir() function
-- [ ] Add custom exception classes for validation errors
+### ✅ Input Validation Module (`core/validators.py`) - COMPLETE
+- [x] Write tests for 4D Nifti validation
+- [x] Write tests for file path validation
+- [x] Write tests for nibabel image object validation
+- [x] Write tests for dimension checking
+- [x] Implement validate_input_image() function
+- [x] Implement validate_atlas_spec() function
+- [x] Implement validate_output_dir() function
+- [x] Add custom exception classes for validation errors
+- **Status**: 22 passing tests, comprehensive edge case coverage
 
-### File I/O Module (`io/readers.py`)
-- [ ] Write tests for Nifti file loading
-- [ ] Write tests for handling .nii and .nii.gz files
-- [ ] Write tests for error handling on invalid files
-- [ ] Implement load_nifti() function
-- [ ] Implement get_image_metadata() function
-- [ ] Implement validate_4d_image() function
-- [ ] Add memory-efficient loading for large files
+### ✅ File I/O Module (`io/readers.py`) - COMPLETE
+- [x] Write tests for Nifti file loading
+- [x] Write tests for handling .nii and .nii.gz files
+- [x] Write tests for error handling on invalid files
+- [x] Implement load_nifti() function
+- [x] Implement get_image_metadata() function
+- [x] Implement validate_4d_image() function
+- [x] Add memory-efficient loading for large files
+- **Status**: 24 passing tests, handles compressed/uncompressed formats
 
-### Basic Extraction Strategy (`core/strategies.py`)
-- [ ] Write tests for mean extraction strategy
-- [ ] Write tests for handling NaN values
-- [ ] Write tests for empty parcels edge case
-- [ ] Write tests for single voxel parcels
-- [ ] Create ExtractionStrategy base class
-- [ ] Implement MeanExtractionStrategy class
-- [ ] Implement extract() method for mean strategy
-- [ ] Add proper dtype consistency handling
+### ✅ Extraction Strategies (`core/strategies.py`) - COMPLETE
+- [x] Write tests for mean extraction strategy
+- [x] Write tests for handling NaN values
+- [x] Write tests for empty parcels edge case
+- [x] Write tests for single voxel parcels
+- [x] Create ExtractionStrategy base class
+- [x] Implement MeanExtractionStrategy class
+- [x] Implement MedianExtractionStrategy class
+- [x] Implement PCAExtractionStrategy class
+- [x] Implement WeightedMeanExtractionStrategy class
+- [x] Add proper dtype consistency handling
+- **Status**: 23 passing tests, all 4 strategies implemented with full edge case handling
 
-### Core Extractor (`core/extractor.py`)
-- [ ] Write tests for ParcelExtractor initialization
-- [ ] Write tests for fit() method
-- [ ] Write tests for transform() method
-- [ ] Write tests for fit_transform() method
-- [ ] Implement ParcelExtractor class
-- [ ] Implement basic signal extraction pipeline
+### ✅ Core Extractor (`core/extractor.py`) - COMPLETE (Basic Functionality)
+- [x] Write tests for ParcelExtractor initialization (TDD approach)
+- [x] Write tests for atlas and strategy parameters (TDD approach)
+- [x] Write tests for fit_transform() method (TDD approach)
+- [x] Write tests for actual signal extraction (TDD approach)
+- [x] Implement ParcelExtractor class with proper TDD methodology
+- [x] Implement basic signal extraction pipeline
+- [ ] Add support for different strategy selection
 - [ ] Add logging for extraction process
 - [ ] Implement error handling and recovery
+- **Status**: 5 passing tests, basic functionality working with mean extraction
 
 ### Basic Output Writer (`io/writers.py`)
 - [ ] Write tests for TSV file generation
