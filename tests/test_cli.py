@@ -5,7 +5,7 @@ from pathlib import Path
 from unittest.mock import patch
 import sys
 
-from parcelextract.cli.main import main, create_parser
+from parcelextract.cli.main import main, create_parser, resolve_atlas_path
 
 
 class TestCLIMain:
@@ -138,3 +138,34 @@ class TestCLIIntegration:
         assert metadata['n_timepoints'] == 10
         assert str(atlas_file) in metadata['atlas']
         assert str(img_file) in metadata['input_file']
+
+
+class TestAtlasResolution:
+    """Test atlas path resolution functionality."""
+
+    def test_resolve_existing_atlas_file(self, temp_dir):
+        """Test resolving existing atlas file."""
+        # Create test atlas file
+        atlas_file = temp_dir / "test_atlas.nii.gz"
+        atlas_file.touch()
+        
+        # Should return the file path
+        resolved = resolve_atlas_path(str(atlas_file))
+        assert resolved == str(atlas_file)
+
+    def test_resolve_templateflow_atlas_name_raises_helpful_error(self):
+        """Test that TemplateFlow atlas names raise helpful error."""
+        with pytest.raises(ValueError) as exc_info:
+            resolve_atlas_path("Schaefer2018")
+        
+        error_msg = str(exc_info.value)
+        assert "TemplateFlow atlas names" in error_msg
+        assert "not yet supported" in error_msg
+        assert "local atlas file path" in error_msg
+
+    def test_resolve_nonexistent_file_raises_error(self):
+        """Test that nonexistent files raise FileNotFoundError."""
+        with pytest.raises(FileNotFoundError) as exc_info:
+            resolve_atlas_path("/nonexistent/atlas.nii.gz")
+        
+        assert "Atlas file not found" in str(exc_info.value)

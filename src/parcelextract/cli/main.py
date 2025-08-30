@@ -9,6 +9,52 @@ from parcelextract.core.extractor import ParcelExtractor
 from parcelextract.io.writers import write_timeseries_tsv, write_json_sidecar
 
 
+def resolve_atlas_path(atlas_spec: str) -> str:
+    """
+    Resolve atlas specification to a file path.
+    
+    For now, this provides helpful error messages for TemplateFlow atlas names
+    that aren't yet supported, while allowing file paths to pass through.
+    
+    Parameters
+    ----------
+    atlas_spec : str
+        Atlas specification (file path or TemplateFlow name)
+        
+    Returns
+    -------
+    str
+        Resolved atlas path
+        
+    Raises
+    ------
+    ValueError
+        If TemplateFlow atlas name is provided (not yet supported)
+    FileNotFoundError
+        If atlas file path doesn't exist
+    """
+    atlas_path = Path(atlas_spec)
+    
+    # Check if it's a file path that exists
+    if atlas_path.exists():
+        return str(atlas_path)
+    
+    # Check if it looks like a TemplateFlow atlas name
+    templateflow_patterns = [
+        'schaefer2018', 'aal', 'harvardoxford', 'destrieux', 'desikankilliany'
+    ]
+    
+    if any(pattern.lower() in atlas_spec.lower() for pattern in templateflow_patterns):
+        raise ValueError(
+            f"TemplateFlow atlas names like '{atlas_spec}' are not yet supported in this version.\n"
+            f"Please provide a local atlas file path (e.g., '/path/to/atlas.nii.gz').\n"
+            f"Future versions will support automatic TemplateFlow atlas downloading."
+        )
+    
+    # If it's not a TemplateFlow name and file doesn't exist, raise FileNotFoundError
+    raise FileNotFoundError(f"Atlas file not found: {atlas_spec}")
+
+
 def create_parser() -> argparse.ArgumentParser:
     """
     Create command-line argument parser.
@@ -34,7 +80,7 @@ def create_parser() -> argparse.ArgumentParser:
     parser.add_argument(
         '--atlas', 
         required=True,
-        help='Path to atlas Nifti file or TemplateFlow atlas name'
+        help='Path to atlas Nifti file (.nii or .nii.gz). TemplateFlow names not yet supported.'
     )
     
     parser.add_argument(
@@ -86,8 +132,11 @@ def main(argv: Optional[List[str]] = None) -> None:
         print(f"Strategy: {args.strategy}")
     
     try:
+        # Resolve atlas path
+        atlas_path = resolve_atlas_path(args.atlas)
+        
         # Create extractor
-        extractor = ParcelExtractor(atlas=args.atlas, strategy=args.strategy)
+        extractor = ParcelExtractor(atlas=atlas_path, strategy=args.strategy)
         
         # Extract timeseries
         if args.verbose:
