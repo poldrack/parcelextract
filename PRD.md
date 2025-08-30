@@ -111,8 +111,8 @@ The primary purpose of ParcelExtract is to streamline the extraction of parcella
 - **NFR-013:** Type hints for all public functions
 
 ### 4.5 Compatibility
-- **NFR-014:** Support Python 3.8+
-- **NFR-015:** Cross-platform compatibility (Linux, macOS, Windows)
+- **NFR-014:** Support Python 3.12+
+- **NFR-015:** Cross-platform compatibility (Linux, macOS)
 - **NFR-016:** Integration with common neuroimaging tools
 
 ## 5. Technical Architecture
@@ -152,13 +152,13 @@ parcelextract/
 ```
 
 ### 5.2 Key Dependencies
+- **uv** (>=0.8.14): package management
 - **nibabel** (>=3.2.0): Neuroimaging file I/O
 - **nilearn** (>=0.10.0): Neuroimaging data manipulation
 - **templateflow** (>=0.8.0): Atlas management
 - **numpy** (>=1.20.0): Numerical operations
 - **pandas** (>=1.3.0): Data structuring
 - **scipy** (>=1.7.0): Scientific computing
-- **pybids** (>=0.15.0): BIDS file handling
 
 ### 5.3 API Design
 
@@ -187,6 +187,7 @@ class AtlasManager:
 parcelextract \
     --input /path/to/sub-01_task-rest_bold.nii.gz \
     --atlas schaefer2018 \
+    --dimensionality 200 \
     --strategy mean \
     --output-dir /path/to/derivatives \
     --confounds /path/to/confounds.tsv
