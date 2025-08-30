@@ -39,7 +39,7 @@
 ### 1.2 Module Structure
 
 ```
-parcelextract/
+src/parcelextract/
 ├── __init__.py                 # Empty - no code per guidelines
 ├── core/                       # Core processing logic
 │   ├── __init__.py            # Empty
@@ -207,8 +207,7 @@ python --version  # Verify 3.12+
 curl -LsSf https://astral.sh/uv/install.sh | sh
 
 # 3. Initialize project
-uv init parcelextract
-cd parcelextract
+uv init --package .
 
 # 4. Add dependencies
 uv add nibabel nilearn numpy pandas scipy templateflow
@@ -218,6 +217,10 @@ uv add --dev pytest pytest-cov ruff mypy pre-commit
 
 # 6. Setup pre-commit hooks
 uv run pre-commit install
+
+# 7. Create virtual environment
+uv venv
+
 ```
 
 ### 4.2 IDE Configuration
@@ -520,7 +523,7 @@ jobs:
 
 ```bash
 # Project setup
-uv init
+uv init --package .
 uv add nibabel nilearn numpy pandas scipy templateflow
 uv add --dev pytest pytest-cov ruff mypy
 

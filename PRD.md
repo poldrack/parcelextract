@@ -119,7 +119,7 @@ The primary purpose of ParcelExtract is to streamline the extraction of parcella
 
 ### 5.1 Module Structure
 ```
-parcelextract/
+src/parcelextract/
 ├── __init__.py
 ├── core/
 │   ├── __init__.py

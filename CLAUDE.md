@@ -37,7 +37,7 @@
 
 ### Module Structure
 ```
-parcelextract/
+src/parcelextract/
 ├── __init__.py              # Keep empty
 ├── core/
 │   ├── __init__.py          # Keep empty

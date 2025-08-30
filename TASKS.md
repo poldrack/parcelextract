@@ -1,7 +1,7 @@
 # TASKS.md - ParcelExtract Project Tasks
 
 ## Project Setup & Configuration
-- [ ] Initialize project with uv (`uv init`)
+- [ ] Initialize project with uv (`uv init --package .`)
 - [ ] Update pyproject.toml with project metadata and dependencies
 - [ ] Set up directory structure as specified in PRD
 - [ ] Configure .gitignore for Python project
