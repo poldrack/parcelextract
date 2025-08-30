@@ -54,17 +54,22 @@
 - [x] Add proper dtype consistency handling
 - **Status**: 23 passing tests, all 4 strategies implemented with full edge case handling
 
-### ✅ Core Extractor (`core/extractor.py`) - COMPLETE (Basic Functionality)
+### ✅ Core Extractor (`core/extractor.py`) - COMPLETE 
 - [x] Write tests for ParcelExtractor initialization (TDD approach)
-- [x] Write tests for atlas and strategy parameters (TDD approach)
+- [x] Write tests for atlas and strategy parameters (TDD approach) 
 - [x] Write tests for fit_transform() method (TDD approach)
 - [x] Write tests for actual signal extraction (TDD approach)
+- [x] Write tests for different strategy selection (TDD approach)
+- [x] Write tests for invalid strategy error handling (TDD approach)
+- [x] Write tests for PCA strategy functionality (TDD approach)
+- [x] Write tests for input validation in fit_transform (TDD approach)
 - [x] Implement ParcelExtractor class with proper TDD methodology
 - [x] Implement basic signal extraction pipeline
-- [ ] Add support for different strategy selection
+- [x] Add support for different strategy selection (mean, median, pca, weighted_mean)
+- [x] Implement proper input validation using existing validators
+- [x] Implement error handling and recovery for invalid inputs/strategies
 - [ ] Add logging for extraction process
-- [ ] Implement error handling and recovery
-- **Status**: 5 passing tests, basic functionality working with mean extraction
+- **Status**: 9 passing tests, full functionality with all strategies and validation
 
 ### Basic Output Writer (`io/writers.py`)
 - [ ] Write tests for TSV file generation

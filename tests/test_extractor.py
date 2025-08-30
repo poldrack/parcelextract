@@ -4,6 +4,7 @@ import numpy as np
 import pytest
 
 from parcelextract.core.extractor import ParcelExtractor
+from parcelextract.core.validators import ValidationError
 
 
 class TestParcelExtractor:
@@ -47,3 +48,57 @@ class TestParcelExtractor:
         for parcel_idx in range(result.shape[0]):
             parcel_timeseries = result[parcel_idx, :]
             assert np.std(parcel_timeseries) > 0  # Should have some variation
+
+    def test_fit_transform_uses_different_strategies(self, synthetic_4d_nifti, test_atlas_nifti):
+        """Test that different strategies produce different results."""
+        # Extract with mean strategy
+        extractor_mean = ParcelExtractor(atlas=test_atlas_nifti, strategy='mean')
+        result_mean = extractor_mean.fit_transform(synthetic_4d_nifti)
+        
+        # Extract with median strategy  
+        extractor_median = ParcelExtractor(atlas=test_atlas_nifti, strategy='median')
+        result_median = extractor_median.fit_transform(synthetic_4d_nifti)
+        
+        # Results should be different (with random data, mean != median)
+        assert not np.allclose(result_mean, result_median)
+        
+        # Both should have the same shape
+        assert result_mean.shape == result_median.shape
+
+    def test_invalid_strategy_raises_error(self, synthetic_4d_nifti, test_atlas_nifti):
+        """Test that invalid strategy parameter raises ValueError."""
+        with pytest.raises(ValueError, match="Unknown strategy: invalid"):
+            extractor = ParcelExtractor(atlas=test_atlas_nifti, strategy='invalid')
+            # This should trigger the error when _get_strategy() is called
+            extractor.fit_transform(synthetic_4d_nifti)
+
+    def test_pca_strategy_works(self, synthetic_4d_nifti, test_atlas_nifti):
+        """Test that PCA strategy produces different results than mean."""
+        # Extract with mean strategy
+        extractor_mean = ParcelExtractor(atlas=test_atlas_nifti, strategy='mean')
+        result_mean = extractor_mean.fit_transform(synthetic_4d_nifti)
+        
+        # Extract with PCA strategy
+        extractor_pca = ParcelExtractor(atlas=test_atlas_nifti, strategy='pca')
+        result_pca = extractor_pca.fit_transform(synthetic_4d_nifti)
+        
+        # Results should be different (PCA extracts first principal component)
+        assert not np.allclose(result_mean, result_pca)
+        
+        # Both should have the same shape
+        assert result_mean.shape == result_pca.shape
+        
+        # PCA results should have finite values (no NaN or inf)
+        assert np.all(np.isfinite(result_pca))
+
+    def test_fit_transform_validates_inputs(self, test_atlas_nifti):
+        """Test that fit_transform validates its inputs using ValidationError."""
+        extractor = ParcelExtractor(atlas=test_atlas_nifti, strategy='mean')
+        
+        # Test with None input should raise ValidationError
+        with pytest.raises(ValidationError):
+            extractor.fit_transform(None)
+            
+        # Test with non-existent file should raise ValidationError  
+        with pytest.raises(ValidationError):
+            extractor.fit_transform("/path/that/does/not/exist.nii.gz")
