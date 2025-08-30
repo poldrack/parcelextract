@@ -88,7 +88,7 @@ parcelextract/
 - **Location**: `atlases/manager.py`
 
 #### Builder Pattern
-- **Purpose**: Construct BIDS-compliant filenames with multiple optional components
+- **Purpose**: Construct BIDS-compliant filenames (to the degree possible) with multiple optional components
 - **Implementation**: `BIDSNameBuilder` class
 - **Location**: `io/bids.py`
 
