@@ -186,3 +186,101 @@ def validate_output_dir(output_dir: Union[str, Path, None]) -> Path:
             raise ValidationError(f"Cannot create output directory {dir_path}: {e}")
     
     return dir_path
+
+
+def validate_spatial_compatibility(input_img: nib.Nifti1Image, atlas_img: nib.Nifti1Image) -> None:
+    """
+    Validate that input image and atlas have compatible spatial dimensions.
+    
+    Parameters
+    ----------
+    input_img : nibabel.Nifti1Image
+        4D input neuroimaging data
+    atlas_img : nibabel.Nifti1Image  
+        3D atlas data
+        
+    Raises
+    ------
+    ValidationError
+        If spatial dimensions don't match or affine matrices are incompatible
+    """
+    # Get spatial dimensions (first 3 dimensions)
+    input_spatial_shape = input_img.shape[:3]
+    atlas_spatial_shape = atlas_img.shape[:3]
+    
+    if input_spatial_shape != atlas_spatial_shape:
+        raise ValidationError(
+            f"Input image and atlas have incompatible spatial dimensions. "
+            f"Input: {input_spatial_shape}, Atlas: {atlas_spatial_shape}. "
+            f"Images must be in the same coordinate space (e.g., both in MNI152NLin2009cAsym space). "
+            f"Consider resampling your input image to match the atlas space using tools like "
+            f"nilearn.image.resample_to_img() or FSL's flirt/applywarp."
+        )
+    
+    # Check if affine matrices are reasonably similar (allowing for small floating point differences)
+    input_affine = input_img.affine
+    atlas_affine = atlas_img.affine
+    
+    # Compare affine matrices with some tolerance for floating point precision
+    if not np.allclose(input_affine, atlas_affine, rtol=1e-3, atol=1e-3):
+        # Calculate the maximum difference for reporting
+        max_diff = np.max(np.abs(input_affine - atlas_affine))
+        
+        # Only warn if the difference is significant (more than just floating point precision)
+        if max_diff > 1e-2:  # 0.01 threshold for significant differences
+            import warnings
+            warnings.warn(
+                f"Input image and atlas have different affine matrices. "
+                f"Maximum difference: {max_diff:.6f}. "
+                f"This may indicate the images are not in the same coordinate space. "
+                f"Results may be inaccurate if images are not properly aligned.",
+                UserWarning
+            )
+
+
+def detect_image_resolution(img: nib.Nifti1Image) -> int:
+    """
+    Detect the spatial resolution (voxel size) of a neuroimaging volume.
+    
+    Parameters
+    ----------
+    img : nibabel.Nifti1Image
+        Input neuroimaging image
+        
+    Returns
+    -------
+    int
+        Detected resolution in mm (1, 2, or 3), rounded to nearest integer
+        
+    Raises
+    ------
+    ValidationError
+        If resolution cannot be determined or is invalid
+    """
+    try:
+        # Get voxel sizes from the affine matrix
+        voxel_sizes = nib.affines.voxel_sizes(img.affine)
+        
+        # Take the mean of the first 3 dimensions (spatial)
+        mean_voxel_size = np.mean(voxel_sizes[:3])
+        
+        # Round to nearest integer mm
+        resolution = int(round(mean_voxel_size))
+        
+        # Validate that it's a reasonable resolution
+        if resolution < 1 or resolution > 10:
+            raise ValidationError(
+                f"Detected unusual voxel resolution: {resolution}mm "
+                f"(voxel sizes: {voxel_sizes[:3]}). "
+                f"Expected values between 1-10mm."
+            )
+        
+        return resolution
+        
+    except Exception as e:
+        if isinstance(e, ValidationError):
+            raise
+        raise ValidationError(
+            f"Could not determine image resolution from affine matrix: {e}. "
+            f"Affine matrix: {img.affine}"
+        )

@@ -1,0 +1,7 @@
+{
+  "extraction_strategy": "mean",
+  "atlas": "Schaefer2018",
+  "n_parcels": 200,
+  "n_timepoints": 47,
+  "input_file": "ses-3T_task-motor_contrast-lh_stat-fixzscore.nii.gz"
+}

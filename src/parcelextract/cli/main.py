@@ -10,7 +10,49 @@ from parcelextract.io.writers import write_timeseries_tsv, write_json_sidecar
 from parcelextract.atlases.templateflow import TemplateFlowManager
 
 
-def resolve_atlas_path(atlas_spec: str, space: str = "MNI152NLin2009cAsym") -> str:
+def generate_output_filename(input_path: str, atlas_name: str, desc: str = None) -> str:
+    """
+    Generate BIDS-compliant output filename with atlas and desc information.
+    
+    Parameters
+    ----------
+    input_path : str
+        Path to input file
+    atlas_name : str
+        Atlas name (e.g., 'Schaefer2018', 'AAL')
+    desc : str, optional
+        Atlas description/variant (e.g., '800Parcels7Networks')
+        
+    Returns
+    -------
+    str
+        Base filename (without extension) for output files
+    """
+    input_stem = Path(input_path).stem.replace('.nii', '')
+    
+    # Remove common BIDS datatype suffixes to get the base filename
+    bids_suffixes = ['_bold', '_T1w', '_T2w', '_dwi', '_epi', '_fieldmap', '_sbref']
+    for suffix in bids_suffixes:
+        if input_stem.endswith(suffix):
+            input_stem = input_stem[:-len(suffix)]
+            break
+    
+    # Clean atlas name for BIDS compliance (remove file extensions, paths)
+    atlas_clean = Path(atlas_name).stem.replace('.nii', '')
+    
+    # Build filename with atlas information
+    filename_parts = [input_stem, f"atlas-{atlas_clean}"]
+    
+    # Add desc if provided
+    if desc is not None:
+        filename_parts.append(f"desc-{desc}")
+    
+    filename_parts.append("timeseries")
+    
+    return "_".join(filename_parts)
+
+
+def resolve_atlas_path(atlas_spec: str, space: str = "MNI152NLin2009cAsym", desc: str = None) -> str:
     """
     Resolve atlas specification to a file path.
     
@@ -22,6 +64,8 @@ def resolve_atlas_path(atlas_spec: str, space: str = "MNI152NLin2009cAsym") -> s
         Atlas specification (file path or TemplateFlow name)
     space : str, optional
         Template space for TemplateFlow atlases (default: MNI152NLin2009cAsym)
+    desc : str, optional
+        Atlas description/variant (e.g., 800Parcels7Networks for Schaefer2018)
         
     Returns
     -------
@@ -45,20 +89,26 @@ def resolve_atlas_path(atlas_spec: str, space: str = "MNI152NLin2009cAsym") -> s
     
     # Check if it looks like a TemplateFlow atlas name
     templateflow_patterns = [
-        'schaefer2018', 'aal', 'harvardoxford', 'destrieux', 'desikankilliany'
+        'schaefer2018', 'aal', 'harvardoxford', 'destrieux', 'desikankilliany', 'difumo'
     ]
     
     if any(pattern.lower() in atlas_spec.lower() for pattern in templateflow_patterns):
         try:
             # Try to download from TemplateFlow
             tf_manager = TemplateFlowManager()
-            return tf_manager.get_atlas(atlas_spec, space)
+            kwargs = {}
+            if desc is not None:
+                kwargs['desc'] = desc
+            return tf_manager.get_atlas(atlas_spec, space, **kwargs)
         except ImportError:
             raise RuntimeError(
                 f"TemplateFlow is not installed. To use atlas '{atlas_spec}', install it with:\n"
                 f"uv add templateflow\n"
                 f"Or provide a local atlas file path instead."
             )
+        except ValueError as e:
+            # ValueError from TemplateFlow contains helpful error messages, pass through
+            raise ValueError(str(e)) from e
         except Exception as e:
             raise RuntimeError(
                 f"Failed to download atlas '{atlas_spec}' from TemplateFlow: {e}"
@@ -117,6 +167,11 @@ def create_parser() -> argparse.ArgumentParser:
     )
     
     parser.add_argument(
+        '--desc',
+        help='Atlas description/variant (e.g., 800Parcels7Networks for Schaefer2018)'
+    )
+    
+    parser.add_argument(
         '--verbose',
         action='store_true',
         help='Enable verbose output'
@@ -148,6 +203,8 @@ def main(argv: Optional[List[str]] = None) -> None:
         print(f"Input: {args.input}")
         print(f"Atlas: {args.atlas}")
         print(f"Space: {args.space}")
+        if args.desc:
+            print(f"Description: {args.desc}")
         print(f"Output: {args.output_dir}")
         print(f"Strategy: {args.strategy}")
     
@@ -156,7 +213,7 @@ def main(argv: Optional[List[str]] = None) -> None:
         if args.verbose and not Path(args.atlas).exists():
             print(f"Downloading atlas '{args.atlas}' from TemplateFlow...")
         
-        atlas_path = resolve_atlas_path(args.atlas, args.space)
+        atlas_path = resolve_atlas_path(args.atlas, args.space, args.desc)
         
         # Create extractor
         extractor = ParcelExtractor(atlas=atlas_path, strategy=args.strategy)
@@ -171,10 +228,10 @@ def main(argv: Optional[List[str]] = None) -> None:
         output_dir = Path(args.output_dir)
         output_dir.mkdir(parents=True, exist_ok=True)
         
-        # Generate output filename based on input
-        input_stem = Path(args.input).stem.replace('.nii', '')
-        tsv_file = output_dir / f"{input_stem}_timeseries.tsv"
-        json_file = output_dir / f"{input_stem}_timeseries.json"
+        # Generate output filename based on input, atlas, and desc
+        output_stem = generate_output_filename(args.input, args.atlas, args.desc)
+        tsv_file = output_dir / f"{output_stem}.tsv"
+        json_file = output_dir / f"{output_stem}.json"
         
         # Write outputs
         write_timeseries_tsv(timeseries, tsv_file)
