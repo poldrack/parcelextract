@@ -2,7 +2,7 @@
 
 ## Project Setup & Configuration
 - [ ] Initialize project with uv (`uv init`)
-- [ ] Create pyproject.toml with project metadata and dependencies
+- [ ] Update pyproject.toml with project metadata and dependencies
 - [ ] Set up directory structure as specified in PRD
 - [ ] Configure .gitignore for Python project
 - [ ] Set up pre-commit hooks for code quality
@@ -125,10 +125,8 @@
 
 ### Batch Processing
 - [ ] Write tests for batch input handling
-- [ ] Write tests for parallel processing
 - [ ] Write tests for progress tracking
 - [ ] Implement batch_process() function
-- [ ] Add parallel processing support
 - [ ] Implement progress indicators
 - [ ] Add batch error handling
 - [ ] Create batch summary reports
@@ -136,8 +134,6 @@
 ### Performance Optimization
 - [ ] Profile current implementation
 - [ ] Optimize memory usage
-- [ ] Implement chunked processing for large files
-- [ ] Add caching for repeated operations
 - [ ] Benchmark against requirements (<30s for typical image)
 
 ## Milestone 4: BIDS Compliance (Priority 4)
