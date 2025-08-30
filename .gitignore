@@ -1,0 +1,4 @@
+*.nii.gz
+
+__pycache__
+.coverage
