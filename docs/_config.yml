@@ -1,0 +1,39 @@
+title: ParcelExtract
+description: A Python module for extracting time-series signals from 4D neuroimaging data
+theme: jekyll-theme-minimal
+show_downloads: true
+google_analytics:
+
+# Navigation
+navigation:
+  - title: Home
+    url: /
+  - title: Installation
+    url: /installation
+  - title: Contributing
+    url: /contributing
+  - title: Planning
+    url: /planning
+  - title: Tasks
+    url: /tasks
+  - title: Changelog
+    url: /changelog
+  - title: Development Guide
+    url: /development
+  - title: Product Requirements
+    url: /prd
+  - title: Transcripts
+    url: /transcripts
+
+# Collections
+collections:
+  pages:
+    output: true
+    permalink: /:name
+
+# Defaults
+defaults:
+  - scope:
+      path: ""
+    values:
+      layout: default
